@@ -7,11 +7,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var pg = require('pg');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
-var app = express();
-
 
 // postgres config, connection pool setup
 
@@ -22,12 +17,9 @@ var app = express();
 // 
 // set these for your db
 var config = {
-    // user: '{{dbuser}}', //env var: PGUSER
-    // database: '{{dbname}}', //env var: PGDATABASE
-    // password: '{{dbpass}}', //env var: PGPASSWORD
     user: '{{dbuser}}', //env var: PGUSER
     database: '{{dbname}}', //env var: PGDATABASE
-    password: '{{dbpassword}}', //env var: PGPASSWORD
+    password: '{{dbpass}}', //env var: PGPASSWORD
     port: 5432, //env var: PGPORT
     max: 10, // max number of clients in the pool
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
@@ -38,27 +30,11 @@ var config = {
 //it will keep idle connections open for a 30 seconds
 //and set a limit of maximum 10 idle clients
 var pool = new pg.Pool(config);
+var routes = require('./routes/index')(pool);
 
-// to run a query we can acquire a client from the pool,
-// run a query on the client, and then return the client to the pool
-pool.connect(function(err, client, done) {
-    if (err) {
-        return console.error('error fetching client from pool', err);
-    }
-    // sample query; need to pass pool into app somehow.
-    client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-        //call `done()` to release the client back to the pool
-        done();
+var app = express();
 
-        if (err) {
-            return console.error('error running query', err);
-        }
-        console.log(result.rows[0].number);
-        //output: 1
-    });
-});
-
-pool.on('error', function(err, client) {
+pool.on('error', function(err) {
     // if an error is encountered by a client while it sits idle in the pool
     // the pool itself will emit an error event with both the error and
     // the client which emitted the original error
@@ -84,7 +60,6 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
