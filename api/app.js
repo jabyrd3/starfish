@@ -19,13 +19,15 @@ var app = express();
 // and client options
 // note: all config is optional and the environment variables
 // will be read if the config is not present
+// 
+// set these for your db
 var config = {
     // user: '{{dbuser}}', //env var: PGUSER
     // database: '{{dbname}}', //env var: PGDATABASE
     // password: '{{dbpass}}', //env var: PGPASSWORD
-    user: 'admin.jbyrd', //env var: PGUSER
-    database: 'pokemong', //env var: PGDATABASE
-    password: '', //env var: PGPASSWORD
+    user: '{{dbuser}}', //env var: PGUSER
+    database: '{{dbname}}', //env var: PGDATABASE
+    password: '{{dbpassword}}', //env var: PGPASSWORD
     port: 5432, //env var: PGPORT
     max: 10, // max number of clients in the pool
     idleTimeoutMillis: 30000 // how long a client is allowed to remain idle before being closed
