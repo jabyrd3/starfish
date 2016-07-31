@@ -1,2 +1,3 @@
 # starfish
-Distributed backend boilerplate built on CoreOS with PostgreSQL, Node.js, NGINX, CONSUL and RabbitMQ.
+
+Opinionated nodejs application boilerplate with express, posgres and angular.
